@@ -1,2 +1,2 @@
-# Scorpius
-Code for 2015-16 seasons Scorpius robot
+# ScorpiuS
+Code for 2015-16 seasons ScorpiuS robot
