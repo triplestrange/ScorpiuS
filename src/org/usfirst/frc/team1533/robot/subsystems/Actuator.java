@@ -15,11 +15,9 @@ public class Actuator implements PIDOutput {
 	AnalogInput encoder;
 	Joystick joy1, joy2;
 	public static PIDController pid;
-	Vision vision;
 	static double speed;
 
-	public Actuator(Joystick joy1, Joystick joy2, Vision vision){
-		this.vision = vision;
+	public Actuator(Joystick joy1, Joystick joy2){
 		actuator = new Spark(ConstantFactory.ACTUATOR);
 		encoder = new AnalogInput(ConstantFactory.ACTUATOR_ENCODER);
 		pid = new PIDController(4, 0, 1.5, encoder, this);
@@ -34,7 +32,6 @@ public class Actuator implements PIDOutput {
 	}
 
 	public void move(){
-		SmartDashboard.putNumber("actuatorsetpoint", vision.vertical());
 		if(joy2.getPOV() == 0){
 			pid.disable();
 			actuator.set(lerp(1));
@@ -49,9 +46,7 @@ public class Actuator implements PIDOutput {
 		}
 		else if(joy2.getPOV() == 270){
 			pid.enable();
-			if(vision.vertical() != 0)
-				pid.setSetpoint(vision.vertical()+.1);
-			else pid.setSetpoint(2.66);
+			pid.setSetpoint(2.66);
 		}
 
 		else{

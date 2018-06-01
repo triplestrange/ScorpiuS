@@ -18,7 +18,6 @@ public class Robot extends IterativeRobot {
 	Stinger stinger;
 	public static Joystick joy1, joy2, joy3;
 	Gyro gyro;
-	Vision vision;
 	public static AnalogInput ballSenseLeft = new AnalogInput(5);
 	public static AnalogInput ballSenseRight = new AnalogInput(6);
 	double alignTime, special;
@@ -43,10 +42,9 @@ public class Robot extends IterativeRobot {
 		joy1 = new Joystick(0);
 		joy2 = new Joystick(1);
 		gyro = new Gyro();
-		vision = new Vision(joy1, joy2);
-		swerve = new Swerve(joy1, joy2, gyro, vision);
+		swerve = new Swerve(joy1, joy2, gyro);
 		tank = new Tank(joy1, swerve, gyro);
-		actuator = new Actuator(joy1, joy2, vision);
+		actuator = new Actuator(joy1, joy2);
 		stinger = new Stinger(joy2);
 
 		chooser = new SendableChooser();
@@ -104,7 +102,6 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putBoolean("string 4", part4);
 		SmartDashboard.putBoolean("part 5", part5);
 		SmartDashboard.putBoolean("part 6", part6);
-		SmartDashboard.putNumber("vertical", vision.vertical());
 		switch(autoSelected) {
 		case rockwall: ConstantFactory.Steering.bottomVoltage = 1.44;
 		runTime =5250;
@@ -138,54 +135,54 @@ public class Robot extends IterativeRobot {
 		}
 		if(part3){
 
-			Actuator.pid.enable();
-			Actuator.pid.setSetpoint(3);
-			if((Math.abs(vision.horizontal()) < 5) || (System.currentTimeMillis() < startTime3 + 3000))
-				swerve.driveNormal(0, 0, -.25);
-			else{
-				swerve.driveNormal(0, 0, 0);
-				startTime = System.currentTimeMillis();
-				part3 = false;
-				part4 = true;
-			}
+//			Actuator.pid.enable();
+//			Actuator.pid.setSetpoint(3);
+//			if((Math.abs(vision.horizontal()) < 5) || (System.currentTimeMillis() < startTime3 + 3000))
+//				swerve.driveNormal(0, 0, -.25);
+//			else{
+//				swerve.driveNormal(0, 0, 0);
+//				startTime = System.currentTimeMillis();
+//				part3 = false;
+//				part4 = true;
+//			}
 		}
 
 		if(part4){
-			vision.process();
-			if(!Swerve.rotating && loop){
-				if(gyro.getAngle() != 0) Swerve.startangle = (Math.round(gyro.getAngle()/360))*360;
-				else Swerve.startangle = 0;
-				loop = false;
-			}else if(Math.abs(vision.horizontal()) > 15 ){
-				vision.process();
-				swerve.driveNormal(0, 0, Math.max(-.25, Math.min(.25, (vision.horizontal()*1.2)/180 - gyro.getRate()/180)));
-//				Swerve.angleRotation = (gyro.getAngle()+vision.horizontal() + 7)-Swerve.startangle;
-				System.out.println("autonomous: "+ vision.horizontal());
-//				swerve.pivot(Swerve.angleRotation);
-			}
-			else{
-				swerve.driveNormal(0, 0, Math.max(-.25, Math.min(.25, (vision.horizontal()*1.2)/180 - gyro.getRate()/180)));
-				part4 = true;
-				part5 = true;
-				startTime2 = System.currentTimeMillis();
-			}
+//			vision.process();
+//			if(!Swerve.rotating && loop){
+//				if(gyro.getAngle() != 0) Swerve.startangle = (Math.round(gyro.getAngle()/360))*360;
+//				else Swerve.startangle = 0;
+//				loop = false;
+//			}else if(Math.abs(vision.horizontal()) > 15 ){
+//				vision.process();
+//				swerve.driveNormal(0, 0, Math.max(-.25, Math.min(.25, (vision.horizontal()*1.2)/180 - gyro.getRate()/180)));
+////				Swerve.angleRotation = (gyro.getAngle()+vision.horizontal() + 7)-Swerve.startangle;
+//				System.out.println("autonomous: "+ vision.horizontal());
+////				swerve.pivot(Swerve.angleRotation);
+//			}
+//			else{
+//				swerve.driveNormal(0, 0, Math.max(-.25, Math.min(.25, (vision.horizontal()*1.2)/180 - gyro.getRate()/180)));
+//				part4 = true;
+//				part5 = true;
+//				startTime2 = System.currentTimeMillis();
+//			}
 		}
 		if(part5){
-			vision.process();
-			if(vision.vertical() == 0)
-				Actuator.pid.setSetpoint(2.6);
-			else
-				Actuator.pid.setSetpoint(vision.vertical());
-			if((actuator.getAverageVoltage() < (vision.vertical() +.1) && actuator.getAverageVoltage() > (vision.vertical()+.025)) || (System.currentTimeMillis() > startTime2 + 750)){
-				//				part5 = false;
-				//				part6 = true;
-				if(special == 0){
-					startTime = System.currentTimeMillis();
-					special = -1;
-				}
-				part5 = false;
-				part6 = true;
-			}
+//			vision.process();
+//			if(vision.vertical() == 0)
+//				Actuator.pid.setSetpoint(2.6);
+//			else
+//				Actuator.pid.setSetpoint(vision.vertical());
+//			if((actuator.getAverageVoltage() < (vision.vertical() +.1) && actuator.getAverageVoltage() > (vision.vertical()+.025)) || (System.currentTimeMillis() > startTime2 + 750)){
+//				//				part5 = false;
+//				//				part6 = true;
+//				if(special == 0){
+//					startTime = System.currentTimeMillis();
+//					special = -1;
+//				}
+//				part5 = false;
+//				part6 = true;
+//			}
 		}
 		if(part6){
 			//			Actuator.pid.disable();
@@ -253,7 +250,6 @@ public class Robot extends IterativeRobot {
 		stinger.climb();
 		stinger.shoot();
 		stinger.flashlight();
-		vision.process();
 
 		SmartDashboard.putNumber("gyro", gyro.getAngle());
 		SmartDashboard.putNumber("FL Encoder", swerve.modules[0].getAngle()*180/Math.PI);

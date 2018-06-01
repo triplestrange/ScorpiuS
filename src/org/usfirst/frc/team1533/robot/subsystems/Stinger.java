@@ -3,17 +3,19 @@ package org.usfirst.frc.team1533.robot.subsystems;
 import org.usfirst.frc.team1533.robot.ConstantFactory;
 import org.usfirst.frc.team1533.robot.Robot;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Stinger {
-	SpeedController climbR;
-	SpeedController climbL;
+	WPI_TalonSRX climbR;
+	WPI_TalonSRX climbL;
 	static SpeedController shooterR;
 	static SpeedController shooterL;
 	static SpeedController roller;
@@ -27,8 +29,8 @@ public class Stinger {
 	public Stinger(Joystick joy2){
 		on = false;
 		flashy = false;
-		climbR = new CANTalon(ConstantFactory.CLIMB_R);
-		climbL = new CANTalon(ConstantFactory.CLIMB_L);
+		climbR = new WPI_TalonSRX(ConstantFactory.CLIMB_R);
+		climbL = new WPI_TalonSRX(ConstantFactory.CLIMB_L);
 		shooterR = new Spark(ConstantFactory.STINGER_R);
 		shooterL = new Spark(ConstantFactory.STINGER_L);
 		roller = new Spark(ConstantFactory.ROLLER);
